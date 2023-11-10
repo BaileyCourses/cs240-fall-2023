@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+
+import re
+import sys
+
+class Line:
+   def __init__(self, origLine, label = None, comment = None, type = None):
+      self.label = label
+      self.comment = comment
+      self.type = type
+      self.origLine = origLine
+
+def parseInstruction(fileStream):
+   
+   for line in fileStream:
+      origLine = line
+      line = line.rstrip()
+      line = line[:40]
+
+      match = re.match(r"\s*\.", line, re.IGNORECASE)
+
+      if match:
+         lineInfo = Line(origLine, comment = True)
+#         print("The following line is a comment:")
+         continue
+
+      match = re.match(r"\s*(?P<label>[a-z_][a-z_0-9]*)\s*(?P<colon>:\s*)", line, re.IGNORECASE)
+
+      if match:
+         label = match.group("label")
+
+         line = line[match.end("colon"):]
+         print(line)
+
+
+
+def main():
+   parseInstruction(sys.stdin)
+
+if __name__ == "__main__":
+   main()
